@@ -8,7 +8,7 @@ class Passenger:
         return False
     
     def __init__(self,id,name,money):
-        if self.is_valid_name(name):
+        if self.name(name): #setter opgeroept om dubble code te vermijden
             self.__name = name
         else:
             raise ValueError(f"Name is not valid")
@@ -34,7 +34,7 @@ class Vehicle(ABS):
     
     @property
     def number_of_occupants(self):
-        return self.__occupants
+        return len(self.__occupants) #return len van de dictionary
 
     @property
     def maximum_occupants(self):
@@ -42,15 +42,16 @@ class Vehicle(ABS):
     
     @property
     def occupant_names(self):
-        return self.__occupants[Passenger.name]
+        
+        return list(self.__occupants[Passenger.name]) #alle terug geven
     
     def add_passenger(self,passenger):
-        self.amount_of_seats -= 1
-        self.__occupants[passenger.name] = passenger
+        if not self.number_of_occupants >= self.maximum_occupants: #aantal occupants en maximum occupants checken 
+            self.__occupants[passenger.name] = passenger
     
     def remove_passenger(self,passenger):
-        self.amount_of_seats += 1
-        del self.__occupants[passenger]
+        #niet de amount of seat weg doien maar de value uit de dictionary
+        del self.__occupants[passenger.name] #
         
     def remove_all_passengers(self):
         self.__occupants.clear()
@@ -65,10 +66,10 @@ class Bus(Vehicle):
         tarief = 2
         if Bus.number_of_occupants == self.maximum_occupants:
             raise RuntimeError
-        elif Passenger.money < tarief:
+        elif passenger.money < tarief:
             raise RuntimeError
         else:
-            Passenger.money -= tarief
+            passenger.money -= tarief
             self.add_passenger(passenger)
     
     def disembark(self,passenger):
@@ -106,7 +107,3 @@ class Taxi(Vehicle):
         if not Taxi.number_of_occupants == 0:
             self.remove_all_passengers()
             
-    
-
-
-
